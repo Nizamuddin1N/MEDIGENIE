@@ -1,36 +1,65 @@
-import Condition from '../models/Condition.js';
+const Condition = require('../models/Condition');
 
-export const getAllConditions = async() => {
-    return await Condition.find({});
-};
+class ConditionService {
+    async getAllConditions() {
+        return await Condition.find({});
+    }
 
-export const getConditionByName = async(name) => {
-    return await Condition.findOne({ name });
-};
+    async getConditionByName(name) {
+        const condition = await Condition.findOne({ name });
+        if (!condition) {
+            throw new Error('Condition not found');
+        }
+        return condition;
+    }
 
-export const createCondition = async(conditionData) => {
-    const condition = new Condition(conditionData);
-    return await condition.save();
-};
+    async createCondition(conditionData) {
+        const condition = new Condition(conditionData);
+        await condition.save();
+        return condition;
+    }
 
-export const updateConditionByName = async(name, updateData) => {
-    return await Condition.findOneAndUpdate({ name },
-        updateData, { new: true, runValidators: true }
-    );
-};
+    async updateCondition(name, updateData) {
+        const condition = await Condition.findOneAndUpdate({ name },
+            updateData, { new: true, runValidators: true }
+        );
+        if (!condition) {
+            throw new Error('Condition not found');
+        }
+        return condition;
+    }
 
-export const deleteConditionByName = async(name) => {
-    return await Condition.findOneAndDelete({ name });
-};
+    async deleteCondition(name) {
+        const condition = await Condition.findOneAndDelete({ name });
+        if (!condition) {
+            throw new Error('Condition not found');
+        }
+        return condition;
+    }
 
-export const addRemedyToCondition = async(name, remedy) => {
-    return await Condition.findOneAndUpdate({ name }, { $push: { homeRemedies: remedy } }, { new: true });
-};
+    async addRemedy(name, remedy) {
+        const condition = await Condition.findOneAndUpdate({ name }, { $push: { homeRemedies: remedy } }, { new: true });
+        if (!condition) {
+            throw new Error('Condition not found');
+        }
+        return condition;
+    }
 
-export const addExerciseToCondition = async(name, exercise) => {
-    return await Condition.findOneAndUpdate({ name }, { $push: { exercises: exercise } }, { new: true });
-};
+    async addExercise(name, exercise) {
+        const condition = await Condition.findOneAndUpdate({ name }, { $push: { exercises: exercise } }, { new: true });
+        if (!condition) {
+            throw new Error('Condition not found');
+        }
+        return condition;
+    }
 
-export const addNutritionToCondition = async(name, nutrition) => {
-    return await Condition.findOneAndUpdate({ name }, { $push: { nutrition: nutrition } }, { new: true });
-};
+    async addNutrition(name, nutrition) {
+        const condition = await Condition.findOneAndUpdate({ name }, { $push: { nutrition: nutrition } }, { new: true });
+        if (!condition) {
+            throw new Error('Condition not found');
+        }
+        return condition;
+    }
+}
+
+module.exports = new ConditionService();

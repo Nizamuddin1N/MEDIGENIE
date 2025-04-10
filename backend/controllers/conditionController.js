@@ -1,112 +1,112 @@
-import {
-    getAllConditions as getAllConditionsService,
-    getConditionByName as getConditionByNameService,
-    createCondition,
-    updateConditionByName,
-    deleteConditionByName,
-    addRemedyToCondition,
-    addExerciseToCondition,
-    addNutritionToCondition
-} from '../services/conditionService.js';
+const ConditionService = require('../services/conditionService');
 
-export const getAllConditions = async(req, res) => {
-    try {
-        const conditions = await getAllConditionsService();
-        res.json(conditions);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-};
-
-export const getConditionByName = async(req, res) => {
-    try {
-        const condition = await getConditionByNameService(req.params.name);
-        if (!condition) {
-            return res.status(404).json({ error: 'Condition not found' });
+class ConditionController {
+    async getAllConditions(req, res) {
+        try {
+            const conditions = await ConditionService.getAllConditions();
+            res.status(200).json(conditions);
+        } catch (error) {
+            res.status(500).json({ error: error.message });
         }
-        res.json(condition);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
     }
-};
 
-export const addCondition = async(req, res) => {
-    try {
-        const condition = await createCondition(req.body);
-        res.status(201).json(condition);
-    } catch (err) {
-        res.status(400).json({ error: err.message });
-    }
-};
-
-export const updateCondition = async(req, res) => {
-    try {
-        const condition = await updateConditionByName(
-            req.params.name,
-            req.body
-        );
-        if (!condition) {
-            return res.status(404).json({ error: 'Condition not found' });
+    async getConditionByName(req, res) {
+        try {
+            const { name } = req.params;
+            const condition = await ConditionService.getConditionByName(name);
+            res.status(200).json(condition);
+        } catch (error) {
+            if (error.message === 'Condition not found') {
+                res.status(404).json({ error: error.message });
+            } else {
+                res.status(500).json({ error: error.message });
+            }
         }
-        res.json(condition);
-    } catch (err) {
-        res.status(400).json({ error: err.message });
     }
-};
 
-export const deleteCondition = async(req, res) => {
-    try {
-        const condition = await deleteConditionByName(req.params.name);
-        if (!condition) {
-            return res.status(404).json({ error: 'Condition not found' });
+    async createCondition(req, res) {
+        try {
+            const conditionData = req.body;
+            const condition = await ConditionService.createCondition(conditionData);
+            res.status(201).json(condition);
+        } catch (error) {
+            res.status(400).json({ error: error.message });
         }
-        res.json({ message: 'Condition deleted successfully' });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
     }
-};
 
-export const addRemedy = async(req, res) => {
-    try {
-        const condition = await addRemedyToCondition(
-            req.params.name,
-            req.body
-        );
-        if (!condition) {
-            return res.status(404).json({ error: 'Condition not found' });
+    async updateCondition(req, res) {
+        try {
+            const { name } = req.params;
+            const updateData = req.body;
+            const condition = await ConditionService.updateCondition(name, updateData);
+            res.status(200).json(condition);
+        } catch (error) {
+            if (error.message === 'Condition not found') {
+                res.status(404).json({ error: error.message });
+            } else {
+                res.status(400).json({ error: error.message });
+            }
         }
-        res.status(201).json(condition);
-    } catch (err) {
-        res.status(400).json({ error: err.message });
     }
-};
 
-export const addExercise = async(req, res) => {
-    try {
-        const condition = await addExerciseToCondition(
-            req.params.name,
-            req.body
-        );
-        if (!condition) {
-            return res.status(404).json({ error: 'Condition not found' });
+    async deleteCondition(req, res) {
+        try {
+            const { name } = req.params;
+            await ConditionService.deleteCondition(name);
+            res.status(204).send();
+        } catch (error) {
+            if (error.message === 'Condition not found') {
+                res.status(404).json({ error: error.message });
+            } else {
+                res.status(500).json({ error: error.message });
+            }
         }
-        res.status(201).json(condition);
-    } catch (err) {
-        res.status(400).json({ error: err.message });
     }
-};
 
-export const addNutrition = async(req, res) => {
-    try {
-        const condition = await addNutritionToCondition(
-            req.params.name,
-            req.body
-        );
-        if (!condition) {
-            return res.status(404).json({ error: 'Condition not found' });
+    async addRemedy(req, res) {
+        try {
+            const { name } = req.params;
+            const remedy = req.body;
+            const condition = await ConditionService.addRemedy(name, remedy);
+            res.status(201).json(condition);
+        } catch (error) {
+            if (error.message === 'Condition not found') {
+                res.status(404).json({ error: error.message });
+            } else {
+                res.status(400).json({ error: error.message });
+            }
         }
-        res.status(201).json(condition);
-    } catch (err) {
-        res.status(400).json({ error: err.message });
     }
-};
+
+    async addExercise(req, res) {
+        try {
+            const { name } = req.params;
+            const exercise = req.body;
+            const condition = await ConditionService.addExercise(name, exercise);
+            res.status(201).json(condition);
+        } catch (error) {
+            if (error.message === 'Condition not found') {
+                res.status(404).json({ error: error.message });
+            } else {
+                res.status(400).json({ error: error.message });
+            }
+        }
+    }
+
+    async addNutrition(req, res) {
+        try {
+            const { name } = req.params;
+            const nutrition = req.body;
+            const condition = await ConditionService.addNutrition(name, nutrition);
+            res.status(201).json(condition);
+        } catch (error) {
+            if (error.message === 'Condition not found') {
+                res.status(404).json({ error: error.message });
+            } else {
+                res.status(400).json({ error: error.message });
+            }
+        }
+    }
+}
+
+module.exports = new ConditionController();

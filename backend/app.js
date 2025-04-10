@@ -1,23 +1,40 @@
-import dotenv from 'dotenv';
-import express from 'express';
-import mongoose from 'mongoose';
-import cors from 'cors';
-import morgan from 'morgan';
-import helmet from 'helmet';
-import conditionRoutes from './routes/conditionRoutes.js';
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+const dotenv = require('dotenv');
+const conditionRoutes = require('./routes/conditionRoutes');
 
 dotenv.config();
 
 const app = express();
 
+// Enhanced JSON parsing middleware
+app.use(express.json({
+    verify: (req, res, buf) => {
+        try {
+            JSON.parse(buf.toString());
+        } catch (e) {
+            res.status(400).json({ error: "Invalid JSON format" });
+            throw new Error("Invalid JSON");
+        }
+    },
+    limit: '10mb' // Increase payload size if needed
+}));
+
 // Middleware
 app.use(cors());
-app.use(express.json());
-app.use(morgan('dev'));
-app.use(helmet());
+app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use('/api/conditions', conditionRoutes);
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+    if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
+        return res.status(400).json({ error: "Invalid JSON format" });
+    }
+    next();
+});
 
 // Database connection
 mongoose.connect(process.env.MONGO_URI)
@@ -29,9 +46,3 @@ mongoose.connect(process.env.MONGO_URI)
         });
     })
     .catch(err => console.error('MongoDB connection error:', err));
-
-// Error handling middleware
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({ error: 'Something went wrong!' });
-});

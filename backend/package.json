@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "description": "Backend for Health Information Website",
     "main": "app.js",
-    "type": "module",
+
     "scripts": {
         "start": "node app.js",
         "dev": "nodemon app.js",

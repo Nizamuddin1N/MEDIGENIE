@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
 const remedySchema = new mongoose.Schema({
     title: String,
@@ -62,5 +62,4 @@ conditionSchema.pre('save', function(next) {
     next();
 });
 
-const Condition = mongoose.model('Condition', conditionSchema);
-export default Condition;
+module.exports = mongoose.model('Condition', conditionSchema);
