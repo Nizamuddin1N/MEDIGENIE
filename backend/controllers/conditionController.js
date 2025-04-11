@@ -1,6 +1,26 @@
 const ConditionService = require('../services/conditionService');
 
 class ConditionController {
+    async addVideo(req, res) {
+        try {
+            const { name } = req.params;
+            const video = req.body;
+            const condition = await ConditionService.addVideo(name, video);
+            res.status(201).json({ error: error.message });
+
+        } catch (error) {
+            res.status(400).json({ error: error.message });
+        }
+    }
+    async removeVideo(req, res) {
+        try {
+            const { name, videoId } = req.params;
+            const condition = await ConditionService.removeVideo(name, videoId);
+            res.status(200).json(condition);
+        } catch (error) {
+            res.status(400).json({ error: error.message });
+        }
+    }
     async getAllConditions(req, res) {
         try {
             const conditions = await ConditionService.getAllConditions();

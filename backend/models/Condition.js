@@ -8,6 +8,14 @@ const remedySchema = new mongoose.Schema({
     warnings: String
 });
 
+const videoSchema = new mongoose.Schema({
+    title: String,
+    url: { type: String, required: true },
+    source: String,
+    duration: String,
+    description: String
+});
+
 const exerciseSchema = new mongoose.Schema({
     title: String,
     description: String,
@@ -44,9 +52,11 @@ const conditionSchema = new mongoose.Schema({
         ]
     },
     description: String,
+    videos: [videoSchema],
     homeRemedies: [remedySchema],
     exercises: [exerciseSchema],
     nutrition: [nutritionSchema],
+
     createdAt: {
         type: Date,
         default: Date.now

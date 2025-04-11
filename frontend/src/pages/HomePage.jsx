@@ -4,6 +4,7 @@ import ConditionSelector from '../components/ConditionSelector';
 import HomeRemedyList from '../components/HomeRemedyList';
 import ExerciseList from '../components/ExerciseList';
 import NutritionList from '../components/NutritionList';
+import VideoPlayer from '../components/VideoPlayer'; // Add this import
 
 const HomePage = () => {
   const [conditions, setConditions] = useState([]);
@@ -42,7 +43,7 @@ const HomePage = () => {
     <div className="container">
       <header>
         <h1>Health Information Portal</h1>
-        <p>Find home remedies, exercises, and nutrition advice for various health conditions</p>
+        <p>Find home remedies, exercises, nutrition advice, and educational videos for various health conditions</p>
       </header>
       
       <ConditionSelector 
@@ -72,6 +73,14 @@ const HomePage = () => {
               <h3><i className="icon nutrition-icon"></i> Nutrition</h3>
               <NutritionList nutrition={selectedCondition.nutrition} />
             </section>
+
+            {/* Add VideoPlayer section */}
+            {selectedCondition.videos && selectedCondition.videos.length > 0 && (
+              <section className="info-section">
+                <h3><i className="icon video-icon"></i> information</h3>
+                <VideoPlayer videos={selectedCondition.videos} />
+              </section>
+            )}
           </div>
         </div>
       )}

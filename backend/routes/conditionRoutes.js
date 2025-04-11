@@ -15,4 +15,7 @@ router.post('/:name/remedies', ConditionController.addRemedy);
 router.post('/:name/exercises', ConditionController.addExercise);
 router.post('/:name/nutrition', ConditionController.addNutrition);
 
+router.post('/:name/videos', ConditionController.addVideo);
+router.delete('/:name/videos/:videoId', ConditionController.removeVideo);
+
 module.exports = router;

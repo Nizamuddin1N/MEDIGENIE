@@ -1,6 +1,16 @@
 const Condition = require('../models/Condition');
 
 class ConditionService {
+    async addVideo(name, videoData) {
+        const condition = await Condition.findOneAndUpdate({ name }, { $push: { vides: videoData } }, { new: true });
+        if (!condition) throw new Error('Condition not found');
+        return condition;
+    }
+    async removeVideo(name, videoId) {
+        const condition = await Condition.findOneAndUpdate({ name }, { $pull: { videos: { _id: videoId } } }, { new: true });
+        if (!condition) throw new Error('Condition not found');
+        return condition;
+    }
     async getAllConditions() {
         return await Condition.find({});
     }
