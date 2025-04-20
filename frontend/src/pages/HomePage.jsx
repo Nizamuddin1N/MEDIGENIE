@@ -4,7 +4,9 @@ import ConditionSelector from '../components/ConditionSelector';
 import HomeRemedyList from '../components/HomeRemedyList';
 import ExerciseList from '../components/ExerciseList';
 import NutritionList from '../components/NutritionList';
-import VideoPlayer from '../components/VideoPlayer'; // Add this import
+import VideoPlayer from '../components/VideoPlayer';
+
+
 
 const HomePage = () => {
   const [conditions, setConditions] = useState([]);

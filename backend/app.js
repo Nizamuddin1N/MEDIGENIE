@@ -3,6 +3,8 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const conditionRoutes = require('./routes/conditionRoutes');
+const authRoutes = require('./routes/authRoutes');
+
 
 dotenv.config();
 
@@ -27,6 +29,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use('/api/conditions', conditionRoutes);
+app.use('/api/auth', authRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

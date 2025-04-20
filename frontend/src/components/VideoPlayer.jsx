@@ -11,7 +11,6 @@ const VideoPlayer=({videos}) =>{
     };
     return(
         <div className="video-section">
-            <h3>Educational Video</h3>
             {videos.map((video)=>(
                 <div key={video._id} className="video-card">
                     <h4>{video.title}</h4>
