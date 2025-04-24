@@ -5,10 +5,15 @@ const dotenv = require('dotenv');
 const conditionRoutes = require('./routes/conditionRoutes');
 const authRoutes = require('./routes/authRoutes');
 
-
 dotenv.config();
 
 const app = express();
+
+// Request logging
+app.use((req, res, next) => {
+    console.log(`Incoming ${req.method} request to ${req.url}`);
+    next();
+});
 
 // Enhanced JSON parsing middleware
 app.use(express.json({
@@ -16,11 +21,11 @@ app.use(express.json({
         try {
             JSON.parse(buf.toString());
         } catch (e) {
-            res.status(400).json({ error: "Invalid JSON format" });
-            throw new Error("Invalid JSON");
+            return res.status(400).json({ error: "Invalid JSON format" });
+            // No throw statement here
         }
     },
-    limit: '10mb' // Increase payload size if needed
+    limit: '10mb'
 }));
 
 // Middleware
@@ -33,10 +38,8 @@ app.use('/api/auth', authRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-    if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
-        return res.status(400).json({ error: "Invalid JSON format" });
-    }
-    next();
+    console.error('Server error:', err);
+    res.status(500).json({ error: 'Internal server error' });
 });
 
 // Database connection
