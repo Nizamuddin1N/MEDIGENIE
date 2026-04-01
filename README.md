@@ -1,160 +1,153 @@
-# MediGenie - Health Companion for Disease Prediction, Nutrition and Fitness
+# 🩺 MediGenie
 
-## Overview
+**An ML-powered health companion that predicts likely diseases from symptoms and gives you actionable guidance — nutrition, remedies, exercises, and expert videos.**
 
-MediGenie is a machine learning–powered web application that provides early disease prediction and personalized wellness recommendations.
-It serves as a virtual health companion that connects AI insights with actionable guidance, including nutrition, home remedies, exercises, and expert videos.
-
----
-
-## Key Features
-
-* Disease prediction based on user-input symptoms
-* Personalized recommendations for nutrition, home remedies, and exercises
-* Secure user authentication using JWT
-* Machine learning integration using Random Forest Classifier
-* Interactive and responsive web interface built with React
-* Expert videos section for user education and awareness
+[![GitHub](https://img.shields.io/badge/GitHub-Nizamuddin1N-181717?style=flat-square&logo=github)](https://github.com/Nizamuddin1N)
+[![React](https://img.shields.io/badge/react-18-61DAFB?style=flat-square&logo=react)](https://react.dev)
+[![Python](https://img.shields.io/badge/python-3.8+-3776AB?style=flat-square&logo=python)](https://python.org)
+[![FastAPI](https://img.shields.io/badge/fastapi-0.100+-009688?style=flat-square&logo=fastapi)](https://fastapi.tiangolo.com)
+[![scikit-learn](https://img.shields.io/badge/scikit--learn-random%20forest-F7931E?style=flat-square&logo=scikitlearn)](https://scikit-learn.org)
+[![MongoDB](https://img.shields.io/badge/mongodb-atlas-47A248?style=flat-square&logo=mongodb)](https://mongodb.com)
+[![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE)
 
 ---
 
-## System Architecture
+Most people google their symptoms and end up convinced they have something terminal. MediGenie does something more useful — takes your symptoms, runs them through a trained Random Forest classifier across eight disease datasets, and tells you what condition is most likely along with exactly what to eat, what home remedies apply, and what exercises help.
 
-Frontend: React.js
-Backend: FastAPI / Express.js
-Database: MongoDB
-ML Model: Random Forest (Scikit-Learn)
-API Routes: /predict-disease, /nutrition, /remedies, /exercises, /videos, /register, /login
-
-### Process Flow
-
-1. User fills a health questionnaire
-2. Backend processes input and forwards it to the ML model
-3. Model predicts the likely disease
-4. Frontend displays results and health recommendations
+Not a replacement for a doctor. A starting point that's better than a search engine.
 
 ---
 
-## Tech Stack
+## What it actually does
 
-| Layer           | Technology                           |
-| --------------- | ------------------------------------ |
-| Frontend        | React.js, Axios, TailwindCSS         |
-| Backend         | Node.js, Express.js, FastAPI         |
-| Database        | MongoDB                              |
-| ML Libraries    | Scikit-Learn, Pandas, NumPy, Seaborn |
-| Security        | JWT, Password Hashing                |
-| Version Control | GitHub, GitBash                      |
+- **Disease prediction** — user fills a symptom questionnaire, FastAPI sends inputs to the ML model, Random Forest returns the most likely condition from eight possible diseases
+- **Personalized recommendations** — based on the predicted disease, returns specific nutrition advice, home remedies, and condition-appropriate exercises
+- **Expert videos** — curated educational content per condition so users understand what they're dealing with
+- **JWT authentication** — secure register/login, password hashing, protected routes
+- **Responsive React frontend** — clean health questionnaire UI, results displayed with recommendations inline
 
 ---
 
-## Machine Learning Details
+## Tech stack
 
-* Model Used: Random Forest Classifier
-* Techniques: SMOTE for data balancing, GridSearchCV for hyperparameter tuning
-* Evaluation Metrics: Accuracy, Precision, Recall, F1-Score, Confusion Matrix
-* Datasets Used:
-
-  * Liver Disease
-  * Anemia
-  * Chronic Kidney Disease
-  * Diabetes
-  * Heart Disease
-  * Hypertension
-  * Stroke
-  * Thyroid Disease
+| Layer | Tech |
+|---|---|
+| Frontend | React.js, Axios, TailwindCSS |
+| Backend API | Node.js + Express (auth, user data), FastAPI (ML inference) |
+| Database | MongoDB |
+| ML Model | Scikit-Learn — Random Forest Classifier |
+| ML Utilities | Pandas, NumPy, Seaborn, SMOTE, GridSearchCV |
+| Auth | JWT, bcrypt password hashing |
 
 ---
 
-## Installation and Setup
+## How the ML model works
 
-### Prerequisites
+Eight disease datasets trained into one classifier — Liver Disease, Anemia, Chronic Kidney Disease, Diabetes, Heart Disease, Hypertension, Stroke, and Thyroid Disease.
 
-Install the following before running the project:
+The raw datasets had a class imbalance problem — some conditions appeared far more often than others in the training data, which biases the model toward predicting common conditions. We used **SMOTE (Synthetic Minority Oversampling Technique)** to generate synthetic samples for underrepresented classes and balance the training distribution.
 
-* Node.js (version 18 or higher)
-* Python (version 3.8 or higher)
-* MongoDB (local or cloud)
+Hyperparameters (number of trees, max depth, min samples split) tuned with **GridSearchCV** using 3-fold cross-validation. Final model improved approximately 15% accuracy over the untuned baseline.
 
-### Backend Setup
+Evaluation: Accuracy, Precision, Recall, F1-Score, and Confusion Matrix per disease class.
 
+---
+
+## System flow
+```
+User fills symptom questionnaire
+        │
+        ▼
+React Frontend → Express API (auth check)
+        │
+        ▼
+FastAPI ML Service
+        │
+Random Forest Classifier
+        │
+Predicted Disease
+        │
+        ▼
+Nutrition + Remedies + Exercises + Videos
+        │
+        ▼
+Results displayed on frontend
+```
+
+---
+
+## Getting started locally
+
+**Prerequisites:** Node.js 18+, Python 3.8+, MongoDB
 ```bash
+# Clone
+git clone https://github.com/Nizamuddin1N/MediGenie
+cd MediGenie
+
+# ML + FastAPI backend
 cd backend
 pip install -r requirements.txt
 uvicorn main:app --reload
-```
 
-### Frontend Setup
-
-```bash
+# Frontend (new terminal)
 cd frontend
 npm install
 npm start
 ```
 
-### Database Configuration
+Frontend → `http://localhost:3000`
+FastAPI → `http://localhost:8000`
 
-Add your MongoDB connection and secret key to the `.env` file:
+---
 
+## Environment variables
+```env
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_secret_key
 ```
-MONGO_URI = your_mongodb_connection_string
-JWT_SECRET = your_secret_key
-```
 
 ---
 
-## API Endpoints
+## API endpoints
 
-| Endpoint         | Method | Description                           |
-| ---------------- | ------ | ------------------------------------- |
-| /predict-disease | POST   | Predicts disease based on form inputs |
-| /nutrition       | GET    | Returns dietary recommendations       |
-| /home-remedies   | GET    | Provides home remedy tips             |
-| /exercises       | GET    | Suggests condition-specific exercises |
-| /videos          | GET    | Returns educational videos            |
-| /register        | POST   | Registers new user                    |
-| /login           | POST   | Authenticates user                    |
-
----
-
-## Model Performance
-
-* Classification accuracy improved by approximately 15 percent compared to baseline models
-* Cross-validation (cv=3) used for reliable evaluation
-* SMOTE applied to handle data imbalance
+| Endpoint | Method | What it does |
+|---|---|---|
+| `/predict-disease` | POST | Runs symptom inputs through Random Forest, returns predicted disease |
+| `/nutrition` | GET | Dietary recommendations for predicted condition |
+| `/home-remedies` | GET | Home remedy suggestions |
+| `/exercises` | GET | Condition-specific exercise recommendations |
+| `/videos` | GET | Curated educational videos |
+| `/register` | POST | Create account |
+| `/login` | POST | JWT authentication |
 
 ---
 
-## Challenges and Limitations
+## Model performance
 
-* Difficulty integrating the ML model with web API
-* Inconsistent quality of some datasets
-* Not a diagnostic-level model; only intended for educational and preventive purposes
-
----
-
-## Future Enhancements
-
-* Improve model accuracy with larger datasets
-* Add multilingual support for wider accessibility
-* Integrate verified medical professional advice
-* Enable appointment and ambulance booking features
-* Develop real-time health tracking using wearable data
-* Expand AI to handle image and text-based inputs
+- ~15% accuracy improvement over baseline untuned model
+- SMOTE applied to all eight datasets to fix class imbalance
+- GridSearchCV with cv=3 for hyperparameter tuning
+- Evaluated per class: Accuracy, Precision, Recall, F1-Score, Confusion Matrix
 
 ---
 
-## References
+## Honest limitations
 
-* Scikit-Learn Documentation
-* React Documentation
-* FastAPI Documentation
-* WHO Guidelines, Healthline, WebMD
-* Blogs: Towards Data Science, Analytics Vidhya
+- Not a diagnostic tool — predictions are probabilistic, not medical advice
+- Dataset quality is inconsistent across the eight diseases — some perform better than others
+- Model was trained on publicly available datasets, not clinical patient data
+- Integrating FastAPI (Python) with the Express (Node.js) layer added complexity — two separate backend processes required
 
 ---
 
-## Conclusion
+## What's next
 
-MediGenie provides a complete end-to-end health companion system integrating disease prediction with actionable health guidance.
-The project demonstrates effective AI integration in healthcare and contributes to preventive health awareness.
+- Larger, cleaner datasets to improve per-class accuracy
+- Image and text-based symptom input (skin conditions, lab report parsing)
+- Multilingual support
+- Real-time health tracking via wearable device data
+- Verified medical professional review layer before recommendations
+
+---
+
+*Built by [Nizamuddin](https://github.com/Nizamuddin1N)*
